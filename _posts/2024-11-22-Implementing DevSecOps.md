@@ -91,48 +91,48 @@ $ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugi
 ```
 
 ### Install GitLab Runner
-1. Install Gitlab Runner lalu tambahkan mode execute.
+- Install Gitlab Runner lalu tambahkan mode execute.
 ```bash
 $ sudo curl -L --output /usr/local/bin/gitlab-runner https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-amd64
 $ sudo chmod +x /usr/local/bin/gitlab-runner
 ```
 
-2. Buat pengguna untuk Gitlab CI.
+- Buat pengguna untuk Gitlab CI.
 ```bash
 $ sudo useradd --comment 'GitLab Runner' --create-home gitlab-runner --shell /bin/bash
 ```
 
-3. Install dan jalankan service Gitlab Runner.
+- Install dan jalankan service Gitlab Runner.
 ```bash
 $ sudo gitlab-runner install --user=gitlab-runner --working-directory=/home/gitlab-runner
 $ sudo gitlab-runner start
 ```
 
-4. Tambahkan pengguna Gitlab Runner ke grup docker.
+- Tambahkan pengguna Gitlab Runner ke grup docker.
 ```bash
 $ sudo usermod -aG docker gitlab-runner
 $ sudo -u gitlab-runner -H docker info
 ```
 
 ### Membuat GitLab Akun dan Project
-1. Buat akun Gitlab terlebih dahulu, login atau bisa juga register.
+- Buat akun Gitlab terlebih dahulu, login atau bisa juga register.
    ![GitLab](/assets/img/ss9.png)
-2. Untuk membuat project baru pilih `Projects`{: .filepath} > `New Project`{: .filepath} lalu klik `"Create blank project".`{: .filepath}
+- Untuk membuat project baru pilih `Projects`{: .filepath} > `New Project`{: .filepath} lalu klik `"Create blank project".`{: .filepath}
    ![GitLab](/assets/img/ssganti1.png)
-3. Isi nama project, pilih Visibility Level `Public`{: .filepath}, lalu klik `"Create project".`{: .filepath}
+- Isi nama project, pilih Visibility Level `Public`{: .filepath}, lalu klik `"Create project".`{: .filepath}
    ![GitLab](/assets/img/ssganti2.png)
 
 ### Clone Repository dari Github dan Konfigurasi GitLab
-1. Clone repository dari github <https://github.com/bta-adinusa/flask-todo-app>
-2. Masuk ke dalam direktori dari repository tersebut.
-3. Buat konfigurasi global untuk menyediakan informasi tentang nama dan email.
+- Clone repository dari github <https://github.com/bta-adinusa/flask-todo-app>
+- Masuk ke dalam direktori dari repository tersebut.
+- Buat konfigurasi global untuk menyediakan informasi tentang nama dan email.
 ```bash
 $ git config --global user.name "masukkan username"
 $ git config --global user.mail "masukkan email"
 $ git config --global init.defaultBranch main
 $ git config --global --list
 ```
-4. Ubah URL repository menjadi URL ke repository Gitlab, setelah itu verifikasi hasil set url.
+- Ubah URL repository menjadi URL ke repository Gitlab, setelah itu verifikasi hasil set url.
 ```bash
 $ git remote set-url origin https://gitlab.com/username/repo.git
 $ git remote -v
@@ -164,8 +164,9 @@ CMD ["app.py"]
 {: .prompt-info }
 
 ### Membuat file .gitlab-ci.yml dan SAST.gitlab-ci.yml
-1. Buat file untuk gitlab ci. Lalu isi file gitlab-ci nya sesuai dengan kebutuhan, seperti contoh dibawah ini.
-```bash
+- Buat file untuk gitlab ci. Lalu isi file gitlab-ci nya sesuai dengan kebutuhan, seperti contoh dibawah ini.
+  
+```yaml
 $ nano .gitlab-ci.yml
 
 include:
@@ -196,19 +197,19 @@ deploy:
   only:
     - main
 ```
-2. Buat file untuk konfigurasi SAST. Karena menggunakan template untuk konfigurasi SAST nya, teman-teman bisa gunakan template yang sudah di sediakan Gitlab.
+- Buat file untuk konfigurasi SAST. Karena menggunakan template untuk konfigurasi SAST nya, teman-teman bisa gunakan template yang sudah di sediakan Gitlab.
 
 ### Membuat GitLab Runner dan Push Kode
-1. Sebelum membuat runner, ambil token terlebih dahulu di bagian `Settings`{: .filepath} > `CI/CD.`{: .filepath}
+- Sebelum membuat runner, ambil token terlebih dahulu di bagian `Settings`{: .filepath} > `CI/CD.`{: .filepath}
     ![GitLab](/assets/img/ssganti3.png)
 
-2. Klik `Expand`{: .filepath} pada bagian Runners.
+- Klik `Expand`{: .filepath} pada bagian Runners.
    ![GitLab](/assets/img/ssganti4.png)
 
-3. Klik titik 3 pada Project runners, lalu salin token yang ada.
+- Klik titik 3 pada Project runners, lalu salin token yang ada.
    ![GitLab](/assets/img/ssganti5.png)
 
-4. Register Gitlab Runner dengan menggunakan executor docker.
+- Register Gitlab Runner dengan menggunakan executor docker. 
 ```bash
 $ sudo gitlab-runner register -n \
   --url https://gitlab.com \
@@ -219,46 +220,47 @@ $ sudo gitlab-runner register -n \
   --docker-volume /var/run/docker.sock:/var/run/docker.sock
 ```
 
-5. Setelah Runner sudah terbuat, push kode ke gitlab.
+- Setelah Runner sudah terbuat, push kode ke gitlab.
 ```bash
 $ git add .
 $ git commit -m "comment" && git push origin main
 ```
 
 ### Mendownload Artifacts File JSON
-1. Untuk mendownload hasil dari artifacts bisa di download di bagian `Build`{: .filepath} > `Artifacts.`{: .filepath} Download file yang format JSON.
+- Untuk mendownload hasil dari artifacts bisa di download di bagian `Build`{: .filepath} > `Artifacts.`{: .filepath} Download file yang format JSON.
    ![GitLab](/assets/img/ssganti6.png)
 
-2. Tampilan JSON yang sudah di download akan berantakan dan jadi tidak terstruktur, teman-teman bisa gunakan web untuk memformat ulang tampilan JSON agar jadi lebih terstruktur.
+- Tampilan JSON yang sudah di download akan berantakan dan jadi tidak terstruktur, teman-teman bisa gunakan web untuk memformat ulang tampilan JSON agar jadi lebih terstruktur.
     ![GitLab](/assets/img/ss17.png)
 
 ### Membuat Alert Discord Untuk Pipeline dan Vulnerability
 > Alert nya disini menggunakan Discord ya.
 {: .prompt-info }
-1. Buka Discord channel tempat yang ingin dipakai untuk menerima notifikasi, lalu pilih `Edit Channel.`{: .filepath}
+
+- Buka Discord channel tempat yang ingin dipakai untuk menerima notifikasi, lalu pilih `Edit Channel.`{: .filepath}
    ![GitLab](/assets/img/ssganti7.png)
 
-2. Pilih bagian `Integrations.`{: .filepath}
+- Pilih bagian `Integrations.`{: .filepath}
    ![GitLab](/assets/img/ssganti8.png)
 
-3. Jika belum ada webhook, pilih bagian `Create Webhook`{: .filepath}, lalu pilih `View Webhook`{: .filepath}, setelah itu klik `New Webhook`{: .filepath}. Kalau webhook sudah ada salin URL dari kolom `Copy Webhook URL`{: .filepath}.
+- Jika belum ada webhook, pilih bagian `Create Webhook`{: .filepath}, lalu pilih `View Webhook`{: .filepath}, setelah itu klik `New Webhook`{: .filepath}. Kalau webhook sudah ada salin URL dari kolom `Copy Webhook URL`{: .filepath}.
    ![GitLab](/assets/img/ssganti9.png)
    ![GitLab](/assets/img/ssganti10.png)
 
-4. Beralih ke Gitlab, di bagian `Settings`{: .filepath} pilih Integrations. Pilih `Discord Notifications`{: .filepath}, lalu pilih Configure.
+- Beralih ke Gitlab, di bagian `Settings`{: .filepath} pilih Integrations. Pilih `Discord Notifications`{: .filepath}, lalu pilih Configure.
    ![GitLab](/assets/img/ss16.png)
 
-5. Di tahap ini masukkan URL webhook yang telah di salin sebelumnya, lalu pilih kotak yang ingin di centang sesuai dengan yang ingin dikirim notifikasi ke Discord. Setelah itu pilih `Save changes`{: .filepath}.
+- Di tahap ini masukkan URL webhook yang telah di salin sebelumnya, lalu pilih kotak yang ingin di centang sesuai dengan yang ingin dikirim notifikasi ke Discord. Setelah itu pilih `Save changes`{: .filepath}.
    ![GitLab](/assets/img/ssganti11.png)
 
-6. Contoh tampilan notifikasi Discord.
+- Contoh tampilan notifikasi Discord.
    ![GitLab](/assets/img/ss4.png)
+    > Untuk alerting vulnerability menggunakan telegram.
+    {: .prompt-info }
 
-> untuk alerting vulnerability menggunakan telegram.
-{: .prompt-info }
+- Tambahkan job untuk alert telegram di dalam file _.gitlab-ci.yml_.
 
-7. Tambahkan job untuk alert telegram di dalam file _.gitlab-ci.yml_
-```bash
+```yaml
 notify-telegram:
   stage: notify
   image: python:3.9-alpine
@@ -270,7 +272,8 @@ notify-telegram:
     - python notify-telegram.py gl-sast-report.json
 ```
 
-8. Edit file _notify-telegram.py_ untuk membuat script alert.
+- Edit file _notify-telegram.py_ untuk membuat script alert. 
+
 ```bash
 $ nano notify-telegram.py
 
@@ -331,21 +334,18 @@ if __name__ == "__main__":
         print(f"Error: {e}")
         sys.exit(1)
 ```
-
-9.  Buat bot di telegram, bot ini untuk mengirimkan alert dari vulnerability.
+- Buat bot di telegram, bot ini untuk mengirimkan alert dari vulnerability.
     ![GitLab](/assets/img/ss5.png)
-> karena saya sudah pernah buat bot sebelumnya, jadi saya rename untuk nama botnya. Setelah bot dibuat salin tokennya.
-{: .prompt-info }
-
-10. Akses web untuk mendapatkan informasi bot.
+    > karena saya sudah pernah buat bot sebelumnya, jadi saya rename untuk nama botnya. Setelah bot dibuat salin tokennya.
+    {: .prompt-info }
+- Akses web untuk mendapatkan informasi bot.
 ```bash
 https://api.telegram.org/bot(token)/getMe
 ```
-
-11. Coba kirim pesan ke bot, setelah itu cek di browser apakah sudah mendapatkan chat id.
+- Coba kirim pesan ke bot, setelah itu cek di browser apakah sudah mendapatkan chat id.
     ![GitLab](/assets/img/ss6.png)
-    
-12. Setelah mendapatkan chat id, masukkan ke dalam variables di gitlab CI/CD. Ke `Settings`{: .filepath} > `CI/CD`{: .filepath} > `Variables`{: .filepath}. Isi variables dengan CHAT_ID dan TELEGRAM_TOKEN.
+
+- Setelah mendapatkan chat id, masukkan ke dalam variables di gitlab CI/CD. Ke `Settings`{: .filepath} > `CI/CD`{: .filepath} > `Variables`{: .filepath}. Isi variables dengan CHAT_ID dan TELEGRAM_TOKEN.
     ![GitLab](/assets/img/ss7.png)
     ![GitLab](/assets/img/ss8.png)
 
